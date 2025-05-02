@@ -1,5 +1,6 @@
 "use client"
 
+import Link from 'next/link';
 import React, { useEffect } from 'react'
 
 export default function User({ params }: { params: { id: string } }) {
@@ -41,11 +42,13 @@ export default function User({ params }: { params: { id: string } }) {
 
             <h2 className="text-xl font-bold">Character Sheets</h2>
             {user?.characterSheets.map((sheet: any) => (
-                <div key={sheet.id} className="flex flex-col gap-2">
-                    <img src={sheet.image} alt={sheet.name} className="w-16 h-16 rounded-full" />
-                    <h3 className="text-lg font-bold">{sheet.name}</h3>
-                    <p>{sheet.description}</p>
-                </div>
+                <Link href={`/character-sheets/${sheet.id}`} key={sheet.id}>
+                    <div key={sheet.id} className="flex flex-col gap-2">
+                        <img src={sheet.image} alt={sheet.name} className="w-16 h-16 rounded-full" />
+                        <h3 className="text-lg font-bold">{sheet.name}</h3>
+                        <p>{sheet.description}</p>
+                    </div>
+                </Link>
             ))}
         </div>
     )
