@@ -1,0 +1,168 @@
+// schema.prisma
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL") // uses connection pooling
+    directUrl = env("DATABASE_URL") // uses a direct connection
+}
+
+model Game {
+    id          String         @id @default(cuid())
+    image       String?
+    title       String
+    description String?
+    users       UsersOnGames[]
+}
+
+model User {
+    id              String           @id @default(cuid())
+    image           String?
+    name            String?
+    email           String?          @unique
+    createdAt       DateTime         @default(now()) @map(name: "created_at")
+    updatedAt       DateTime         @updatedAt @map(name: "updated_at")
+    games           UsersOnGames[]
+    characterSheets CharacterSheet[]
+
+    @@map(name: "users")
+}
+
+model UsersOnGames {
+    id         String @id @default(cuid())
+    userId     String
+    gameId     String
+    user       User   @relation(fields: [userId], references: [id])
+    game       Game   @relation(fields: [gameId], references: [id])
+    assignedBy String
+
+    @@map("users_on_games")
+}
+
+model CharacterSheet {
+    id                 String             @id @default(cuid())
+    image              String?
+    name               String?
+    age                Int
+    archetype          String?
+    motivation         String?
+    trauma             String?
+    darkSecret         String?
+    relationships      Relationship[]
+    talents            Talent[]
+    advantages         Advantage[]
+    insightsAndDefects InsightAndDefect[]
+    equipment          Equipment[]
+    armor              Armor[]
+    weapons            Weapon[]
+    memento            Memento[]
+    attributes         Attribute[]
+    resources          Int
+    conditions         Condition[]
+    skills             Skill[]
+    experiencePoints   Int
+    owner              User?              @relation(fields: [ownerId], references: [id])
+    ownerId            String
+}
+
+model InsightAndDefect {
+    id               String          @id @default(cuid())
+    name             String
+    description      String
+    characterSheetId String?
+    CharacterSheet   CharacterSheet? @relation(fields: [characterSheetId], references: [id])
+}
+
+model Equipment {
+    id               String          @id @default(cuid())
+    name             String
+    description      String
+    bonus            Int
+    characterSheetId String?
+    CharacterSheet   CharacterSheet? @relation(fields: [characterSheetId], references: [id])
+}
+
+model Armor {
+    id               String          @id @default(cuid())
+    name             String
+    description      String
+    protection       Int
+    agility          Int
+    characterSheetId String?
+    CharacterSheet   CharacterSheet? @relation(fields: [characterSheetId], references: [id])
+}
+
+model Weapon {
+    id               String          @id @default(cuid())
+    name             String
+    description      String
+    damage           Int
+    range            Int
+    bonus            Int
+    characterSheetId String?
+    CharacterSheet   CharacterSheet? @relation(fields: [characterSheetId], references: [id])
+}
+
+model Memento {
+    id               String          @id @default(cuid())
+    name             String
+    description      String
+    characterSheetId String?
+    CharacterSheet   CharacterSheet? @relation(fields: [characterSheetId], references: [id])
+}
+
+model Attribute {
+    id               String          @id @default(cuid())
+    name             String
+    value            Int
+    description      String
+    characterSheetId String?
+    CharacterSheet   CharacterSheet? @relation(fields: [characterSheetId], references: [id])
+}
+
+model Condition {
+    id               String          @id @default(cuid())
+    type             String
+    name             String
+    description      String
+    value            Int
+    characterSheetId String?
+    CharacterSheet   CharacterSheet? @relation(fields: [characterSheetId], references: [id])
+}
+
+model Skill {
+    id               String          @id @default(cuid())
+    name             String
+    attributeType    String
+    description      String
+    value            Int
+    characterSheetId String?
+    CharacterSheet   CharacterSheet? @relation(fields: [characterSheetId], references: [id])
+}
+
+model Relationship {
+    id                      String         @id @default(cuid())
+    characterName           String
+    relationshipDescription String
+    characterSheet          CharacterSheet @relation(fields: [characterSheetId], references: [id])
+    characterSheetId        String
+}
+
+model Talent {
+    id               String          @id @default(cuid())
+    name             String
+    description      String
+    characterSheetId String?
+    CharacterSheet   CharacterSheet? @relation(fields: [characterSheetId], references: [id])
+}
+
+model Advantage {
+    id               String          @id @default(cuid())
+    name             String
+    description      String
+    characterSheetId String?
+    CharacterSheet   CharacterSheet? @relation(fields: [characterSheetId], references: [id])
+}
